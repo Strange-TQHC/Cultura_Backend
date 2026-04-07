@@ -3,10 +3,14 @@ from rest_framework.response import Response
 from rest_framework import status
 from .models import User
 from .serializers import UserSerializer
+from django.contrib.auth.hashers import make_password, check_password
 
 @api_view(['POST'])
 def signup(request):
-    serializer = UserSerializer(data=request.data)
+    data = request.data.copy()
+    data['password'] = make_password(data['password'])
+    
+    serializer = UserSerializer(data=data)
 
     if serializer.is_valid():
         serializer.save()
@@ -24,7 +28,7 @@ def login(request):
     except User.DoesNotExist:
         return Response({"error": "User not found"}, status=404)
 
-    if user.password != password:
+    if not check_password(password, user.password):
         return Response({"error": "Invalid password"}, status=400)
 
     return Response({
