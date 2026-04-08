@@ -1,8 +1,8 @@
+from django.contrib.auth.models import User
 from django.db import models
 
-class User(models.Model):
-    email = models.EmailField(unique=True)
-    password = models.CharField(max_length=100)
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     name = models.CharField(max_length=100)
     age = models.IntegerField()
@@ -14,4 +14,4 @@ class User(models.Model):
     food_preferences = models.TextField()
 
     def __str__(self):
-        return self.email
+        return self.user.email
