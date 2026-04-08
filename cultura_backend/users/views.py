@@ -1,11 +1,14 @@
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from .models import UserProfile
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
+from rest_framework.permissions import AllowAny
+from rest_framework.permissions import IsAuthenticated
 
 @api_view(['POST'])
+@permission_classes([AllowAny])
 def signup(request):
     email = request.data.get('email')
     password = request.data.get('password')
@@ -31,6 +34,7 @@ def signup(request):
     return Response({"message": "User created successfully"})
 
 @api_view(['POST'])
+@permission_classes([AllowAny])
 def login(request):
     email = request.data.get('email')
     password = request.data.get('password')
@@ -50,4 +54,13 @@ def login(request):
         "user_id": user.id,
         "name": profile.name,
         "permanent_location": profile.permanent_location
+    })
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def protected_test(request):
+    return Response({
+        "message": "You are authenticated",
+        "user": request.user.username
     })
