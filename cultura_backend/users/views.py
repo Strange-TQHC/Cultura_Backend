@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from rest_framework.permissions import AllowAny
 from rest_framework.permissions import IsAuthenticated
+import requests
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
@@ -64,3 +65,33 @@ def protected_test(request):
         "message": "You are authenticated",
         "user": request.user.username
     })
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def generate_description(request):
+    name = request.data.get('name')
+    place_type = request.data.get('type')
+
+    prompt = f"""
+    Explain the cultural significance of a place named "{name}".
+    It is a type of "{place_type}".
+    Keep it short and simple for travelers.
+    """
+
+    try:
+        response = requests.post(
+            "http://localhost:11434/api/generate",
+            json={
+                "model": "llama3",
+                "prompt": prompt,
+                "stream": False
+            }
+        )
+
+        data = response.json()
+        result = data.get("response", "")
+
+        return Response({"description": result})
+
+    except Exception as e:
+        return Response({"error": str(e)}, status=500)
