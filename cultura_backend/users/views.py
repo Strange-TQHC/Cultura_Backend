@@ -67,7 +67,7 @@ def protected_test(request):
     })
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def generate_description(request):
     name = request.data.get('name')
     place_type = request.data.get('type')

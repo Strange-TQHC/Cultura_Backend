@@ -15,3 +15,32 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return self.user.email
+    
+class Place(models.Model):
+    name = models.CharField(max_length=255)
+    latitude = models.FloatField()
+    longitude = models.FloatField()
+    place_type = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+
+class Contribution(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    place = models.ForeignKey(Place, on_delete=models.CASCADE)
+
+    CATEGORY_CHOICES = [
+        ('food', 'Food'),
+        ('history', 'History'),
+        ('folklore', 'Folklore'),
+        ('etiquette', 'Etiquette'),
+    ]
+
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
+    content = models.TextField()
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.place.name} - {self.category}"    
