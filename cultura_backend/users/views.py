@@ -1,6 +1,7 @@
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
-from .models import UserProfile
+from .models import UserProfile, Place, Contribution
+from .serializers import UserProfileSerializer, PlaceSerializer, ContributionSerializer
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
@@ -95,3 +96,18 @@ def generate_description(request):
 
     except Exception as e:
         return Response({"error": str(e)}, status=500)
+    
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_places(request):
+    places = Place.objects.all()
+    serializer = PlaceSerializer(places, many=True)
+    return Response(serializer.data)    
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_contributions(request, place_id):
+    contributions = Contribution.objects.filter(place_id=place_id)
+    serializer = ContributionSerializer(contributions, many=True)
+    return Response(serializer.data)
