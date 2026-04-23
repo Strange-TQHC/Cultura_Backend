@@ -72,11 +72,21 @@ def protected_test(request):
 def generate_description(request):
     name = request.data.get('name')
     place_type = request.data.get('type')
+    contributions = request.data.get('contributions', [])
+
+    combined_text = " ".join([c['content'] for c in contributions])
 
     prompt = f"""
-    Explain the cultural significance of a place named "{name}".
-    It is a type of "{place_type}".
-    Keep it short and simple for travelers.
+    You are a cultural guide.
+
+    Place: {name}
+    Type: {place_type}
+
+    Local Information:
+    {combined_text}
+
+    Explain this place in a helpful and engaging way for travelers.
+    Keep it short and meaningful.
     """
 
     try:
@@ -96,7 +106,6 @@ def generate_description(request):
 
     except Exception as e:
         return Response({"error": str(e)}, status=500)
-    
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
