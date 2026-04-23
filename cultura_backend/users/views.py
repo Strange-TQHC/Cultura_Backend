@@ -8,6 +8,7 @@ from django.contrib.auth import authenticate
 from rest_framework.permissions import AllowAny
 from rest_framework.permissions import IsAuthenticated
 import requests
+from django.db.models import Q
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
@@ -120,3 +121,20 @@ def get_contributions(request, place_id):
     contributions = Contribution.objects.filter(place_id=place_id)
     serializer = ContributionSerializer(contributions, many=True)
     return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def find_place(request):
+    name = request.GET.get('name', '')
+
+    place = Place.objects.filter(
+        Q(name__icontains=name)
+    ).first()
+
+    if place:
+        return Response({
+            "id": place.id,
+            "name": place.name,
+        })
+    else:
+        return Response({"id": None})
