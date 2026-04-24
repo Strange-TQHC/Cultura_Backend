@@ -163,3 +163,24 @@ def add_contribution(request):
     return Response({
         "message": "Contribution added successfully"
     })    
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_profile(request):
+    user = request.user
+
+    return Response({
+        "id": user.id,
+        "username": user.username,
+        "email": user.email,
+    })
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def my_contributions(request):
+    contributions = Contribution.objects.filter(user=request.user)
+
+    serializer = ContributionSerializer(contributions, many=True)
+    return Response(serializer.data)
