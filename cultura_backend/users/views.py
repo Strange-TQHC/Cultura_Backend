@@ -138,3 +138,28 @@ def find_place(request):
         })
     else:
         return Response({"id": None})
+    
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def add_contribution(request):
+    user = request.user
+    place_id = request.data.get('place_id')
+    category = request.data.get('category')
+    content = request.data.get('content')
+
+    try:
+        place = Place.objects.get(id=place_id)
+    except Place.DoesNotExist:
+        return Response({"error": "Place not found"}, status=404)
+
+    contribution = Contribution.objects.create(
+        user=user,
+        place=place,
+        category=category,
+        content=content
+    )
+
+    return Response({
+        "message": "Contribution added successfully"
+    })    
