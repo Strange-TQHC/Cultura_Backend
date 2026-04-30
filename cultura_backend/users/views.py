@@ -184,3 +184,25 @@ def my_contributions(request):
 
     serializer = ContributionSerializer(contributions, many=True)
     return Response(serializer.data)
+
+@api_view(['GET'])
+def get_location_knowledge(request):
+    city = request.GET.get('city', '')
+
+    data = LocationKnowledge.objects.filter(
+        city__icontains=city
+    ).first()
+
+    if data:
+        return Response({
+            "city": data.city,
+            "history": data.history,
+            "culture": data.culture,
+            "food": data.food,
+            "etiquette": data.etiquette,
+            "languages": data.languages,
+            "phrases": data.phrases,
+            "folklore": data.folklore,
+        })
+    else:
+        return Response({"error": "No data found"}, status=404)

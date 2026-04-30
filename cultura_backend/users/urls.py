@@ -12,4 +12,5 @@ urlpatterns = [
     path('add-contribution/', views.add_contribution),
     path('profile/', views.get_profile),
     path('my-contributions/', views.my_contributions),
+    path('location-knowledge/', views.get_location_knowledge),
 ]

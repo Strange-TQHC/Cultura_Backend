@@ -25,7 +25,6 @@ class Place(models.Model):
     def __str__(self):
         return self.name
 
-
 class Contribution(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     place = models.ForeignKey(Place, on_delete=models.CASCADE)
@@ -43,4 +42,21 @@ class Contribution(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.place.name} - {self.category}"    
+        return f"{self.place.name} - {self.category}"   
+
+class LocationKnowledge(models.Model):
+    city = models.CharField(max_length=100)
+
+    history = models.TextField()
+    culture = models.TextField()
+
+    food = models.TextField()
+    etiquette = models.TextField()
+
+    languages = models.TextField()   # e.g. "Odia (80%), Hindi (15%)"
+    phrases = models.TextField()     # common phrases
+
+    folklore = models.TextField()
+
+    def __str__(self):
+        return self.city     
