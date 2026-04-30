@@ -1,6 +1,6 @@
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
-from .models import UserProfile, Place, Contribution
+from .models import UserProfile, Place, Contribution, LocationKnowledge
 from .serializers import UserProfileSerializer, PlaceSerializer, ContributionSerializer
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
@@ -186,6 +186,7 @@ def my_contributions(request):
     return Response(serializer.data)
 
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def get_location_knowledge(request):
     city = request.GET.get('city', '')
 
