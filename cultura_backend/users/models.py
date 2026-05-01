@@ -45,7 +45,7 @@ class Contribution(models.Model):
         return f"{self.place.name} - {self.category}"   
 
 class LocationKnowledge(models.Model):
-    city = models.CharField(max_length=100)
+    city = models.CharField(max_length=100, unique=True)
 
     history = models.TextField()
     culture = models.TextField()
@@ -53,10 +53,12 @@ class LocationKnowledge(models.Model):
     food = models.TextField()
     etiquette = models.TextField()
 
-    languages = models.TextField()   # e.g. "Odia (80%), Hindi (15%)"
-    phrases = models.TextField()     # common phrases
+    languages = models.TextField()
+    phrases = models.TextField()
 
     folklore = models.TextField()
+
+    image_url = models.URLField(blank=True, null=True)
 
     def __str__(self):
         return self.city     

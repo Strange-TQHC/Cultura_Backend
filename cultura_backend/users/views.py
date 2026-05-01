@@ -204,6 +204,7 @@ def get_location_knowledge(request):
             "languages": data.languages,
             "phrases": data.phrases,
             "folklore": data.folklore,
+            "image_url": data.image_url,
         })
     else:
         return Response({"error": "No data found"}, status=404)
